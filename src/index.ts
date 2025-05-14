@@ -13,6 +13,9 @@ app.use(cors())
 app.use("/peserta", PesertaRoute)
 app.use("/hadiah", HadiahRoute)
 
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 
 const server = app.listen(3000, () =>
   console.log(`🚀 Server ready at: http://localhost:3000`),
