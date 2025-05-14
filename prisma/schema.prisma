@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Peserta {
+  id     Int     @id @default(autoincrement())
+  nik    String  @unique
+  nama   String
+  status Boolean
+}
+
+model Hadiah {
+  id Int @id @default(autoincrement())
+  nama String
+  no_urut Int
+  pemenang Int?
+}

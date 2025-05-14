@@ -1,0 +1,62 @@
+import { Prisma, PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+export const createHadiah = async (hadiah_name: string) => {
+  const last_data_length = await prisma.hadiah.aggregate({
+    _count: {
+      _all: true,
+    },
+  });
+
+  const createHadiah = await prisma.hadiah.create({
+    data: {
+      nama: hadiah_name,
+      no_urut: last_data_length._count._all + 1,
+    },
+  });
+
+  return { last_data_length, createHadiah };
+};
+
+export const getHadiah = async (s: any) => {
+  const where = s ? { nama: { contains: s } } : {};
+  const hadiah = await prisma.hadiah.findMany({
+    where: {
+      ...where,
+      AND: [
+        {
+          pemenang: {
+            equals: null,
+          },
+        },
+      ],
+    },
+    orderBy: {
+      no_urut: "asc",
+    },
+  } as Prisma.HadiahFindManyArgs);
+  return hadiah;
+};
+
+export const getHadiahById = async (id: number) => {
+  const hadiah = await prisma.hadiah.findUnique({
+    where: {
+      id,
+    },
+  });
+  return hadiah;
+};
+
+export const updateHadiah = async (
+  id: number,
+  data: Prisma.HadiahUpdateInput
+) => {
+  const hadiah = await prisma.hadiah.update({
+    where: {
+      id,
+    },
+    data,
+  });
+  return hadiah;
+};
