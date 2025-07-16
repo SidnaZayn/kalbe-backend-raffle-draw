@@ -2,6 +2,51 @@ import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+export const getPeserta = async (nik: string, search = "", isAll = false) => {
+  const s = search.toLowerCase();
+  if (isAll) {
+    return await prisma.peserta.findMany({
+      where: {
+        OR: [{ nik: { contains: s } }, { nama: { contains: s } }],
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+  }
+  if (!nik) {
+    const peserta = await prisma.peserta.findMany({
+      where: {
+        OR: [{ nik: { contains: s } }, { nama: { contains: s } }],
+        status: isAll,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+    return peserta;
+  } else {
+    const peserta = await prisma.peserta.findMany({
+      where: {
+        nik: nik,
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+    return peserta;
+  }
+};
+
+export const getPesertaById = async (id: number) => {
+  const peserta = await prisma.peserta.findUnique({
+    where: {
+      id,
+    },
+  });
+  return peserta;
+};
+
 export const getRandomPeserta = async () => {
   const peserta = await prisma.peserta.findMany({
     where: {
@@ -50,3 +95,12 @@ export const createPesertaMany = async (
   });
   return result;
 };
+
+export const deletePeserta = async (id: number) => {
+  const peserta = await prisma.peserta.delete({
+    where: {
+      id,
+    },
+  });
+  return peserta;
+}

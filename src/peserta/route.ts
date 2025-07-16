@@ -1,4 +1,4 @@
-import { getRandomPeserta, updatePeserta, createPesertaMany } from "./service";
+import { getRandomPeserta, updatePeserta, createPesertaMany, getPeserta, getPesertaById, deletePeserta } from "./service";
 import { Router, Request } from "express";
 import multer from "multer";
 import XLSX from "xlsx";
@@ -9,6 +9,33 @@ interface MulterRequest extends Request {
 const router = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+router.get("/", async (req, res) => {
+  try {
+    const { nik, search } = req.query;
+    const isAll = req.query.all === "true";
+    const peserta = await getPeserta(nik as string, search as string, isAll);
+    res.status(200).json(peserta);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/id/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const peserta = await getPesertaById(parseInt(id));
+    if (!peserta) {
+      res.status(404).json({ error: "Peserta not found" });
+      return
+    }
+    res.status(200).json(peserta);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 router.get("/get-random", async (req, res) => {
   try {
@@ -62,4 +89,14 @@ router.post(
   }
 );
 
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const peserta = await deletePeserta(parseInt(id));
+    res.status(200).json(peserta);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 export default router;

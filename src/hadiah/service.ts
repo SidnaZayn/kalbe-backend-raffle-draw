@@ -19,16 +19,15 @@ export const createHadiah = async (hadiah_name: string) => {
   return { last_data_length, createHadiah };
 };
 
-export const getHadiah = async (s: any) => {
+export const getHadiah = async (s: any, all = false) => {
   const where = s ? { nama: { contains: s } } : {};
+  const allData = all ? {} : { equals: null };
   const hadiah = await prisma.hadiah.findMany({
     where: {
       ...where,
       AND: [
         {
-          pemenang: {
-            equals: null,
-          },
+          pemenang: allData,
         },
       ],
     },
@@ -57,6 +56,15 @@ export const updateHadiah = async (
       id,
     },
     data,
+  });
+  return hadiah;
+};
+
+export const deleteHadiah = async (id: number) => {
+  const hadiah = await prisma.hadiah.delete({
+    where: {
+      id,
+    },
   });
   return hadiah;
 };

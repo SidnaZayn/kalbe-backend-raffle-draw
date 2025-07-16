@@ -1,5 +1,6 @@
 import {
   createHadiah,
+  deleteHadiah,
   getHadiah,
   getHadiahById,
   updateHadiah,
@@ -74,7 +75,22 @@ router.put("/update-pemenang/:id", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const { s } = req.query;
-    const hadiah = await getHadiah(s);
+    const all = req.query.all === "true";
+    const hadiah = await getHadiah(s, all);
+    res.status(200).json(hadiah);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const hadiah = await deleteHadiah(parseInt(id));
     res.status(200).json(hadiah);
   } catch (error) {
     if (error instanceof Error) {
