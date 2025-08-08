@@ -83,6 +83,8 @@ export const getRandomPeserta = async () => {
     select: {
       nik: true,
       id: true,
+      nama: true,
+      departemen: true,
     },
     orderBy: {
       id: "asc",
@@ -92,6 +94,8 @@ export const getRandomPeserta = async () => {
     return {
       id: peserta.id,
       nik: peserta.nik,
+      nama: peserta.nama,
+      departemen: peserta.departemen,
     };
   });
   const randomIndex = Math.floor(Math.random() * pesertaNIK.length);

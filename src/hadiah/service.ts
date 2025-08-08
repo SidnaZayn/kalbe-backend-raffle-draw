@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const createHadiah = async (hadiah_name: string) => {
+export const createHadiah = async (hadiah_name: string, img_url:string) => {
   const last_data_length = await prisma.hadiah.aggregate({
     _count: {
       _all: true,
@@ -13,6 +13,7 @@ export const createHadiah = async (hadiah_name: string) => {
     data: {
       nama: hadiah_name,
       no_urut: last_data_length._count._all + 1,
+      img_url: img_url,
     },
   });
 

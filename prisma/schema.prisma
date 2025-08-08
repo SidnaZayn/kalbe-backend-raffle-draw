@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Peserta {
@@ -16,8 +17,9 @@ model Peserta {
 }
 
 model Hadiah {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   nama     String
   no_urut  Int
   pemenang Int?
+  img_url  String?
 }

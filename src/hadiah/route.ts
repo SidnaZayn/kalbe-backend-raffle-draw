@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
     const { nama } = req.body;
     if (!nama) throw Error("Nama is required");
 
-    const hadiah = await createHadiah(req.body.nama);
+    const hadiah = await createHadiah(req.body.nama, req.body.img_url);
     res.status(200).json(hadiah);
   } catch (error) {
     if (error instanceof Error) {
@@ -59,10 +59,10 @@ router.put("/update-pemenang/:id", async (req, res) => {
     const pemenangId = req.body.pemenangId;
     if (!pemenangId) throw Error("Pemenang ID is required");
 
-    await updateHadiah(parseInt(id), {
+    const hadiah = await updateHadiah(parseInt(id), {
       pemenang: pemenangId,
     });
-    res.status(200).json({ message: "Update Success" });
+    res.status(200).json({ message: "Update Success", hadiah });
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message });
