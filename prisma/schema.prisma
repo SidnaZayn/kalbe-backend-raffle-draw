@@ -8,15 +8,16 @@ datasource db {
 }
 
 model Peserta {
-  id     Int     @id @default(autoincrement())
-  nik    String  @unique
-  nama   String
-  status Boolean
+  id         Int     @id @default(autoincrement())
+  nik        String  @unique
+  nama       String
+  status     Boolean
+  departemen String?
 }
 
 model Hadiah {
-  id Int @id @default(autoincrement())
-  nama String
-  no_urut Int
+  id       Int    @id @default(autoincrement())
+  nama     String
+  no_urut  Int
   pemenang Int?
 }

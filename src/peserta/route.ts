@@ -76,6 +76,7 @@ router.post(
       return {
         nik: row[0].toString(),
         nama: row[1],
+        departemen: row[2].toString().toUpperCase(),
         status: false,
       };
     });

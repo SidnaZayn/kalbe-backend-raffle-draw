@@ -48,9 +48,37 @@ export const getPesertaById = async (id: number) => {
 };
 
 export const getRandomPeserta = async () => {
+  let skipDepartemen = [];
+
+  let countCikarang = await prisma.peserta.count({
+    where: { departemen: "KALBE CIKARANG", status: true },
+  });
+  if (countCikarang >= 3) {
+    skipDepartemen.push("KALBE CIKARANG");
+  }
+
+  let countBekasi = await prisma.peserta.count({
+    where: { departemen: "KALBE BEKASI", status: true },
+  });
+  if (countBekasi >= 3) {
+    skipDepartemen.push("KALBE BEKASI");
+  }
+
+  let countJakarta = await prisma.peserta.count({
+    where: { departemen: "KALBE JAKARTA", status: true },
+  });
+  if (countJakarta >= 3) {
+    skipDepartemen.push("KALBE JAKARTA");
+  }
+  
   const peserta = await prisma.peserta.findMany({
     where: {
       status: false,
+      AND: {
+        departemen: {
+          notIn: skipDepartemen,
+        },
+      },
     },
     select: {
       nik: true,
@@ -89,11 +117,25 @@ export const createPesertaMany = async (
   if (!peserta) {
     throw new Error("Peserta is null");
   }
+  let invalidPeserta: Prisma.PesertaCreateManyInput[] = [];
+  let validPeserta: Prisma.PesertaCreateManyInput[] = [];
+
+  for (let i = 0; i < peserta.length; i++) {
+    if (
+      peserta[i].departemen !== "KALBE CIKARANG" &&
+      peserta[i].departemen !== "KALBE JAKARTA" &&
+      peserta[i].departemen !== "KALBE BEKASI"
+    ) {
+      invalidPeserta.push(peserta[i]);
+    } else {
+      validPeserta.push(peserta[i]);
+    }
+  }
   const result = await prisma.peserta.createMany({
-    data: peserta,
+    data: validPeserta,
     skipDuplicates: true,
   });
-  return result;
+  return { result, invalidPeserta };
 };
 
 export const deletePeserta = async (id: number) => {
@@ -103,4 +145,4 @@ export const deletePeserta = async (id: number) => {
     },
   });
   return peserta;
-}
+};
