@@ -9,11 +9,13 @@ datasource db {
 }
 
 model Peserta {
-  id         Int     @id @default(autoincrement())
-  nik        String  @unique
-  nama       String
-  status     Boolean
-  departemen String?
+  id          Int     @id @default(autoincrement())
+  nik         String  @unique
+  nama        String
+  status      Boolean
+  departement String?
+  location    String?
+  entity      String?
 }
 
 model Hadiah {
