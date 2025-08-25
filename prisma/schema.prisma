@@ -9,13 +9,15 @@ datasource db {
 }
 
 model Peserta {
-  id          Int     @id @default(autoincrement())
-  nik         String  @unique
-  nama        String
-  status      Boolean
-  departement String?
-  location    String?
-  entity      String?
+  id             Int     @id @default(autoincrement())
+  nik            String  @unique
+  nama           String
+  status         Boolean
+  departement_id Int?
+  location       String?
+  entity         String?
+
+  departemnt Departement? @relation(fields: [departement_id], references: [id])
 }
 
 model Hadiah {
@@ -24,4 +26,11 @@ model Hadiah {
   no_urut  Int
   pemenang Int?
   img_url  String?
+}
+
+model Departement {
+  id      Int       @id @default(autoincrement())
+  name    String?
+  status  Boolean   @default(true)
+  Peserta Peserta[]
 }
